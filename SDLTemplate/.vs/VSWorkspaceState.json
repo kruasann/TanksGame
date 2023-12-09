@@ -2,8 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\Assets",
-    "\\Assets\\Fonts"
+    "\\Assets\\Sprites",
+    "\\Assets\\Sprites\\Buttons",
+    "\\Assets\\Sprites\\Tanks_parts",
+    "\\Objects",
+    "\\Scenes",
+    "\\Scenes\\settings_scene.cpp",
+    "\\src\\include",
+    "\\Utils"
   ],
-  "SelectedNode": "\\Assets\\Fonts\\Raleway-Italic.ttf",
+  "SelectedNode": "\\Makefile",
   "PreviewInSolutionExplorer": false
 }

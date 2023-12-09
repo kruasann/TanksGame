@@ -10,9 +10,10 @@ struct Slider {
     int minValue;
     int maxValue;
     int currentValue;
+    bool isDragging;
 
-    Slider(int x, int y, int width, int height, int minVal, int maxVal)
-        : minValue(minVal), maxValue(maxVal), currentValue(minVal) {
+    Slider(int x, int y, int width, int height, int minVal, int maxVal, int currentValue)
+        : minValue(minVal), maxValue(maxVal), currentValue(minVal), isDragging(false) {
         track.x = x;
         track.y = y;
         track.w = width;
@@ -20,18 +21,18 @@ struct Slider {
 
         thumb.w = height; // Делаем ширину бегунка равной высоте дорожки для квадратной формы
         thumb.h = height;
-        thumb.x = x; // Начальное положение бегунка
+        thumb.x = x + (width - height) * (currentValue - minVal) / (maxVal - minVal); // Вычисляем начальное положение
         thumb.y = y;
     }
 
     // Функция для отрисовки ползунка
     void render(SDL_Renderer* renderer) {
         // Отрисовка дорожки
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Белый цвет
+        SDL_SetRenderDrawColor(renderer, 206, 182, 140, 255); // Белый цвет
         SDL_RenderFillRect(renderer, &track);
 
         // Отрисовка бегунка
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); // Синий цвет
+        SDL_SetRenderDrawColor(renderer, 119, 84, 84, 255); // Синий цвет
         SDL_RenderFillRect(renderer, &thumb);
     }
 
