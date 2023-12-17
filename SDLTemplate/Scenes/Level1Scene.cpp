@@ -1,105 +1,137 @@
 // Level1Scene.cpp
 
-// Подключаем заголовочные файлы
 #include "Level1Scene.h"
 #include "../Utils/Utils.h"
+#include "../Utils/ContactListener.h"
 #include "../Objects/button.h"
 #include <iostream>
 #include <vector>
 
-// Определяем масштаб преобразования из метров в пиксели для Box2D
-const float SCALE = 32.0f;
+const float SCALE = 5.0f; // Коэффициент масштабирования между Box2D и пикселями
 
 // Конструктор класса Level1Scene
 Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(renderer), 
-    musicPlayer(musicPlayer), 
-    soundPlayer(soundPlayer), 
+    : renderer(renderer),
+    musicPlayer(musicPlayer),
+    soundPlayer(soundPlayer),
     musicStarted(false),
     backgroundTexture(loadTexture("Assets/Sprites/Level1_background.png", renderer)),
     pauseButton(loadTexture("Assets\\Sprites\\Buttons\\pause_button.png", renderer),
         loadTexture("Assets\\Sprites\\Buttons\\pause_button_hover.png", renderer),
-        25, 25, &soundPlayer)
-{
-    // Создаем физический мир Box2D
-    createPhysicsWorld();
-    std::cout << "Was Volume: " << static_cast<int>(musicPlayer.currentVolume()) << std::endl;
-    // Создаем террейн (поверхность земли и препятствия)
-    createTerrain();
-    float initialXPosition = 300.0f / SCALE; // Примерное значение, может быть изменено
-    float initialYPosition = 400.0f / SCALE; // Примерное значение, может быть изменено
+        25, 25, &soundPlayer) {
 
+    // Создание физического мира Box2D с гравитацией
+    createPhysicsWorld();
+
+    std::cout << "Was Volume: " << static_cast<int>(musicPlayer.currentVolume()) << std::endl;
+
+    // Создание террейна, включая землю и стены
+    createTerrain();
+
+    // Инициализация начальной позиции танка
+    float initialXPosition = 400.0f / SCALE;
+    float initialYPosition = 400.0f / SCALE;
+
+    // Создание танка
     tank = new Tank(renderer, physicsWorld, initialXPosition, initialYPosition);
 
+    myContactListener = new ContactListener();
+    physicsWorld->SetContactListener(myContactListener);
 }
 
 // Деструктор класса Level1Scene
 Level1Scene::~Level1Scene() {
-    // Уничтожаем текстуру фона
+    // Уничтожение фона
     SDL_DestroyTexture(backgroundTexture);
+
+    // Удаление танка
     if (tank) {
         delete tank;
         tank = nullptr;
     }
 
-    // Освобождаем ресурсы, занятые физическим миром Box2D
+    // Освобождение ресурсов физического мира Box2D
+    delete myContactListener;
     delete physicsWorld;
 }
 
-// Создаем физический мир Box2D
+// Рендеринг террейна
+// Создание физического мира Box2D
 void Level1Scene::createPhysicsWorld() {
-    // Устанавливаем гравитацию (0 по X и -10 по Y)
-    b2Vec2 gravity(0.0f, -10.0f); // Например, гравитация вниз
-    physicsWorld = new b2World(gravity);
-
+    // Установка гравитации
+    b2Vec2 gravity(0.0f, 10.0f * SCALE); // Создание вектора гравитации, где 10.0f - ускорение свободного падения по оси Y (x, y)
+    physicsWorld = new b2World(gravity); // Инициализация физического мира с заданной гравитацией
 }
 
-// Создаем террейн
+// Создание террейна
 void Level1Scene::createTerrain() {
-    // Определяем статическое тело для земли
+    // Определение и создание земли
     b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -10.0f / SCALE); // Позиция в мире Box2D, переведенная в метры
+    // Позиция земли в нижней части экрана
+    float groundHeight = 256.0f; // Высота поверхности
+    groundBodyDef.position.Set(1024 / 2.0f / SCALE, (1024 - groundHeight / 2) / SCALE);
 
-    // Создаем тело в физическом мире
     b2Body* groundBody = physicsWorld->CreateBody(&groundBodyDef);
-
-    // Определяем форму для земли (прямоугольник)
     b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f); // 50 метров ширины и 10 метров высоты
-
-    // Добавляем фиксированную форму к телу
+    // Установка размера земли (ширина, высота)
+    groundBox.SetAsBox(1024 / 2.0f / SCALE, groundHeight / 2 / SCALE);
     groundBody->CreateFixture(&groundBox, 0.0f);
 
-    // Сохраняем тело для рендеринга
     terrainBodies.push_back(groundBody);
 
+    // Создание стен
+    // Левая стена
+    b2BodyDef leftWallBodyDef;
+    leftWallBodyDef.position.Set(10.0f / SCALE / 2, 1024 / 2.0f / SCALE); // Установка позиции для левой стены
+    b2Body* leftWallBody = physicsWorld->CreateBody(&leftWallBodyDef); // Создание тела для левой стены
+    b2PolygonShape leftWallBox;
+    leftWallBox.SetAsBox(10.0f / SCALE / 2, 1024 / SCALE); // Определение формы левой стены
+    leftWallBody->CreateFixture(&leftWallBox, 0.0f); // Присоединение формы к телу левой стены
+
+    // Правая стена
+    b2BodyDef rightWallBodyDef;
+    rightWallBodyDef.position.Set((1024 - 10.0f / 2) / SCALE, 1024 / 2.0f / SCALE); // Установка позиции для правой стены
+    b2Body* rightWallBody = physicsWorld->CreateBody(&rightWallBodyDef); // Создание тела для правой стены
+    b2PolygonShape rightWallBox;
+    rightWallBox.SetAsBox(10.0f / SCALE / 2, 1024 / 2.0f / SCALE); // Определение формы правой стены
+    rightWallBody->CreateFixture(&rightWallBox, 0.0f); // Присоединение формы к телу правой стены
+
+    terrainBodies.push_back(leftWallBody); // Добавление левой стены в список террейнов
+    terrainBodies.push_back(rightWallBody); // Добавление правой стены в список террейнов
 }
 
-// Функция для рендеринга террейна
+// Рендеринг террейна
 void Level1Scene::renderTerrain() {
-    // Устанавливаем цвет для рендеринга тел Box2D (голубой для земли)
-    SDL_SetRenderDrawColor(renderer, 45, 158, 230, 255);
-
-    // Рендерим тела Box2D
+    // Рендеринг всех физических тел в террейне
     for (b2Body* body : terrainBodies) {
-        b2PolygonShape* shape = dynamic_cast<b2PolygonShape*>(body->GetFixtureList()->GetShape());
+        b2PolygonShape* shape = dynamic_cast<b2PolygonShape*>(body->GetFixtureList()->GetShape()); // Получение формы тела
         if (shape) {
-            // Получаем позицию и угол тела
-            b2Vec2 pos = body->GetPosition();
-            float angle = body->GetAngle();
+            b2Vec2 pos = body->GetPosition(); // Получение позиции тела
+            float angle = body->GetAngle(); // Получение угла наклона тела
 
-            // Создаем прямоугольник для рендеринга
+            bool isWall = (shape->m_vertices[1].x * 2 * SCALE < 1024 / 2); // Определение, является ли тело стеной
+
+            // Установка цвета для рендеринга
+            if (isWall) {
+                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); // Установка серого цвета для стен
+            }
+            else {
+                SDL_SetRenderDrawColor(renderer, 45, 158, 230, 255); // Установка голубого цвета для земли
+            }
+
             SDL_Rect rect;
-            rect.x = (pos.x * SCALE);
-            rect.y = (1024 - (pos.y * SCALE)) - (shape->m_vertices[1].y * SCALE);
-            rect.w = shape->m_vertices[1].x * 2 * SCALE;
-            rect.h = shape->m_vertices[1].y * 2 * SCALE;
+            rect.x = (pos.x * SCALE) - (shape->m_vertices[1].x * SCALE); // Установка координаты X для рендеринга
+            rect.y = (pos.y * SCALE) - (shape->m_vertices[1].y * SCALE);  // Установка координаты Y для рендеринга
+            rect.w = shape->m_vertices[1].x * 2 * SCALE; // Установка ширины прямоугольника для рендеринга
+            rect.h = shape->m_vertices[1].y * 2 * SCALE; // Установка высоты прямоугольника для рендеринга
 
-            // Рендерим прямоугольник
-            SDL_RenderFillRect(renderer, &rect);
+            SDL_RenderFillRect(renderer, &rect); // Отрисовка прямоугольника
         }
     }
 }
+
+
+
 
 // Обработка событий
 void Level1Scene::handleEvents(const SDL_Event& event, GameState& gameState) {
@@ -134,14 +166,35 @@ void Level1Scene::handleEvents(const SDL_Event& event, GameState& gameState) {
 }
 
 void Level1Scene::update() {
+    // Обновление состояния физического мира и танка
 
+    // Установка временного шага для физической симуляции
     const float timeStep = 1.0f / 60.0f;
+    // Установка количества итераций для расчета скорости тел в физическом мире
     const int32 velocityIterations = 6;
+    // Установка количества итераций для расчета позиций тел в физическом мире
     const int32 positionIterations = 2;
+    // Обновление состояния физического мира на один временной шаг
     physicsWorld->Step(timeStep, velocityIterations, positionIterations);
+
 
     if (tank) {
         tank->update();
+    }
+
+    if (tank) {
+        auto& projectiles = tank->getProjectiles(); // Получаем список снарядов
+        for (auto it = projectiles.begin(); it != projectiles.end();) {
+            (*it)->update();
+
+            if ((*it)->isMarkedForDeletion()) {
+                delete* it;
+                it = projectiles.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
     }
 }
 

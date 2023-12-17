@@ -3,14 +3,12 @@
     "",
     "\\Assets",
     "\\Assets\\Sprites",
-    "\\Assets\\Sprites\\Buttons",
     "\\Assets\\Sprites\\Tanks_parts",
     "\\Objects",
+    "\\Objects\\Physics",
     "\\Scenes",
-    "\\Scenes\\settings_scene.cpp",
-    "\\src\\include",
-    "\\Utils"
+    "\\Scenes\\settings_scene.cpp"
   ],
-  "SelectedNode": "\\Makefile",
+  "SelectedNode": "\\Assets\\Projectile.h",
   "PreviewInSolutionExplorer": false
 }

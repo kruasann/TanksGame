@@ -8,12 +8,18 @@
 #include "../Utils/MusicPlayer.h"
 #include "../Utils/SoundPlayer.h"
 
+// Класс сцены паузы.
 class PauseMenuScene {
 public:
+    // Конструктор.
     PauseMenuScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
+    // Деструктор.
     ~PauseMenuScene();
+    // Обработка событий.
     void handleEvents(const SDL_Event& event, GameState& gameState);
+    // Рендер сцены.
     void render();
+    // Обновление состояния сцены.
     GameState updateState();
 
 private:

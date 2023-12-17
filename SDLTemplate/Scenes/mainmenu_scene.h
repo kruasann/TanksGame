@@ -7,6 +7,7 @@
 #include "../Utils/MusicPlayer.h"
 #include "../Utils/SoundPlayer.h"
 
+// Класс главного меню игры.
 class MainMenuScene {
 private:
     SDL_Renderer* renderer;

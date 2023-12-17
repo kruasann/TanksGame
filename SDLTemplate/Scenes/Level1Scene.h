@@ -1,5 +1,4 @@
-// Level1Scene.h
-
+// Заголовочный файл для класса Level1Scene
 #ifndef LEVEL1_SCENE_H
 #define LEVEL1_SCENE_H
 
@@ -10,33 +9,53 @@
 #include "../Assets/tank.h"
 #include "../Utils/MusicPlayer.h"
 #include "../Utils/SoundPlayer.h"
+#include "../Utils/ContactListener.h"
 #include "../Objects/button.h"
+#include "../Objects/Physics/PhysicalEntity.h" // Добавлен для использования класса PhysicalEntity
 
 class Level1Scene {
 public:
+    // Конструктор класса, инициализирующий сцену уровня 1
     Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
+
+    // Деструктор класса, освобождающий ресурсы
     ~Level1Scene();
+
+    // Обработка событий ввода (например, мыши и клавиатуры)
     void handleEvents(const SDL_Event& event, GameState& gameState);
+
+    // Обновление состояния сцены
     void update();
+    ContactListener* myContactListener;
+
+    // Получение текущего состояния игры
     GameState updateState();
+
+    // Отрисовка сцены
     void render();
-    Tank* tank;
+
+    // Запуск музыки на сцене
     void startMusic();
-    void renderTerrain();
+
+    // Проверка, началась ли музыка
     bool isMusicStarted() const;
-    void createPhysicsWorld(); // Создание физического мира Box2D
-    void createTerrain();      // Создание террейна
 
 private:
-    bool musicStarted = false;
-    bool pauseEnabled = false;
-    SDL_Renderer* renderer;
-    SDL_Texture* backgroundTexture;
-    Button pauseButton;
-    MusicPlayer& musicPlayer;
-    SoundPlayer& soundPlayer;
-    b2World* physicsWorld; // Указатель на физический мир Box2D
-    std::vector<b2Body*> terrainBodies;
+    bool musicStarted = false; // Флаг, указывающий, началась ли музыка
+    bool pauseEnabled = false; // Флаг, указывающий, включена ли пауза
+    SDL_Renderer* renderer;    // Рендерер SDL
+    SDL_Texture* backgroundTexture; // Текстура фона
+    Button pauseButton;             // Кнопка паузы
+    MusicPlayer& musicPlayer;       // Плеер музыки
+    SoundPlayer& soundPlayer;       // Плеер звуков
+    b2World* physicsWorld;          // Физический мир Box2D
+    std::vector<b2Body*> terrainBodies; // Тела террейна
+    Tank* tank; // Указатель на объект танка
+
+    // Методы класса:
+    void createPhysicsWorld(); // Создание физического мира Box2D
+    void createTerrain();      // Создание террейна
+    void renderTerrain();      // Рендеринг террейна
 };
 
 #endif // LEVEL1_SCENE_H
