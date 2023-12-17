@@ -4,7 +4,10 @@
 Projectile::Projectile(SDL_Renderer* ren, b2World* world, float x, float y, float angle, float force) 
     : renderer(ren) {
     texture = loadTexture("Assets/Sprites/Tanks_parts/projectile.png", renderer);
+    explosionTexture = loadTexture("Assets/Sprites/Tanks_parts/explosion.png", renderer);
     SDL_QueryTexture(texture, NULL, NULL, &textureWidth, &textureHeight);
+
+    collisionSound = Mix_LoadWAV("Assets/Sounds/boom_sound.mp3");
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -38,16 +41,30 @@ Projectile::~Projectile() {
     if (texture) {
         SDL_DestroyTexture(texture);
     }
+    if (explosionTexture) {
+        SDL_DestroyTexture(explosionTexture);
+    }
+    if (collisionSound) {
+        Mix_FreeChunk(collisionSound);
+    }
 }
 
 void Projectile::collide() {
-    std::cout << "Projectile collided" << std::endl;
+    Mix_PlayChannel(-1, collisionSound, 0);
+    texture = explosionTexture; // Смена на текстуру взрыва
     hasCollided = true;
+    explosionTimer = 20; // Установка таймера для отображения взрыва
 }
 
 void Projectile::update() {
-    // Update logic for the projectile (e.g., checking for collision, out-of-bound conditions)
+    if (hasCollided && explosionTimer > 0) {
+        explosionTimer--;
+        if (explosionTimer == 0) {
+            markedForDeletion = true;
+        }
+    }
 }
+
 
 void Projectile::render() {
     b2Vec2 position = body->GetPosition();

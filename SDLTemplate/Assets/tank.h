@@ -2,8 +2,10 @@
 #define TANK_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <box2d/box2d.h>
 #include "Projectile.h"
+#include <SDL2/SDL_mixer.h>
 #include <vector>
 
 class Tank {
@@ -22,11 +24,19 @@ private:
     b2Body* body;
     SDL_Texture* texture;
     SDL_Texture* barrelTexture;
+    Mix_Chunk* movingSound;
+    Mix_Chunk* barrelRotationSound;
+    Mix_Chunk* fireSound;
+    int movingSoundChannel = -1;
+    int barrelRotationSoundChannel = -1;
     int textureWidth, textureHeight;
     bool movingLeft, movingRight;
     bool rotatingBarrelUp, rotatingBarrelDown;
     float speed, barrelAngle, rotationSpeed, fireForce;
     std::vector<Projectile*> projectiles; // Снаряды
+
+    int fireCooldown;          // Задержка между выстрелами
+    Uint32 lastFireTime;       // Время последнего выстрела
 };
 
 #endif // TANK_H

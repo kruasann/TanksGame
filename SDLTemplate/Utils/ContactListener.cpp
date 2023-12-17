@@ -11,10 +11,8 @@ void ContactListener::BeginContact(b2Contact* contact) {
 
     if (projectileA) {
         projectileA->collide();
-        std::cout << "Projectile collided with an object." << std::endl;
     }
-    if (projectileB) {
+    else if (projectileB) {
         projectileB->collide();
-        std::cout << "Projectile collided with an object." << std::endl;
     }
 }

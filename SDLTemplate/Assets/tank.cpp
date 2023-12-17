@@ -12,6 +12,13 @@ Tank::Tank(SDL_Renderer* ren, b2World* world, float x, float y)
     barrelTexture = loadTexture("Assets/Sprites/Tanks_parts/barrel.png", renderer);
     SDL_QueryTexture(texture, NULL, NULL, &textureWidth, &textureHeight);
 
+    movingSound = Mix_LoadWAV("Assets/Sounds/tank_driving_sound.mp3");
+    barrelRotationSound = Mix_LoadWAV("Assets/Sounds/barrel_moving_sound.mp3");
+    fireSound = Mix_LoadWAV("Assets/Sounds/shoot_sound.mp3");
+
+    fireCooldown = 1000;  // «адержка в миллисекундах
+    lastFireTime = 0;     // »нициализаци€ времени последнего выстрела
+
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(x, y);
@@ -32,9 +39,21 @@ Tank::~Tank() {
     if (texture) {
         SDL_DestroyTexture(texture);
     }
+
     if (barrelTexture) {
         SDL_DestroyTexture(barrelTexture);
     }
+
+    if (movingSound) {
+        Mix_FreeChunk(movingSound);
+    }
+    if (barrelRotationSound) {
+        Mix_FreeChunk(barrelRotationSound);
+    }
+    if (fireSound) {
+        Mix_FreeChunk(fireSound);
+    }
+
     for (auto& projectile : projectiles) {
         delete projectile;
     }
@@ -85,7 +104,7 @@ void Tank::fire() {
     float angleRad = barrelAngle * M_PI / 180.0f;
 
     // –ассчитываем смещение конца ствола относительно центра танка
-    float barrelLength = 32.f / SCALE;
+    float barrelLength = 45.f / SCALE;
     float offsetX = cos(angleRad) * barrelLength;
     float offsetY = sin(angleRad) * barrelLength;
 
@@ -93,9 +112,19 @@ void Tank::fire() {
     float barrelEndX = body->GetPosition().x + offsetX;
     float barrelEndY = body->GetPosition().y + offsetY; // ”бедитесь, что инверси€ оси Y корректна дл€ вашей системы координат
 
+    Uint32 currentTime = SDL_GetTicks();
+    if (currentTime - lastFireTime < fireCooldown) {
+        return; // ≈сли не прошло достаточно времени, не стрел€ем
+    }
+
+    lastFireTime = currentTime; // ќбновл€ем врем€ последнего выстрела
+
     // —оздаем снар€д в этой позиции
     Projectile* newProjectile = new Projectile(renderer, body->GetWorld(), barrelEndX, barrelEndY, barrelAngle, fireForce);
     projectiles.push_back(newProjectile);
+
+    Mix_PlayChannel(-1, fireSound, 0); // ¬оспроизведение один раз на любом свободном канале
+
 }
 
 
@@ -115,6 +144,35 @@ void Tank::update() {
     else if (rotatingBarrelDown) {
         barrelAngle -= rotationSpeed;
         if (barrelAngle < 0.0f) barrelAngle += 360.0f;
+    }
+
+    // ѕроверка, движетс€ ли танк
+    if (movingLeft || movingRight) {
+        // ¬оспроизводим звук, если танк начал движение и звук еще не воспроизводитс€
+        if (movingSoundChannel == -1) {
+            movingSoundChannel = Mix_PlayChannel(-1, movingSound, -1); // ¬оспроизведение на любом свободном канале, -1 дл€ бесконечного повторени€
+        }
+    }
+    else {
+        // ќстановка звука, если танк остановилс€
+        if (movingSoundChannel != -1) {
+            Mix_HaltChannel(movingSoundChannel);
+            movingSoundChannel = -1;
+        }
+    }
+
+    if (rotatingBarrelUp || rotatingBarrelDown) {
+        // ¬оспроизводим звук, если башн€ начала поворачиватьс€ и звук еще не воспроизводитс€
+        if (barrelRotationSoundChannel == -1) {
+            barrelRotationSoundChannel = Mix_PlayChannel(-1, barrelRotationSound, -1); // ¬оспроизведение на любом свободном канале, -1 дл€ бесконечного повторени€
+        }
+    }
+    else {
+        // ќстановка звука, если башн€ остановилась
+        if (barrelRotationSoundChannel != -1) {
+            Mix_HaltChannel(barrelRotationSoundChannel);
+            barrelRotationSoundChannel = -1;
+        }
     }
 }
 

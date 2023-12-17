@@ -2,6 +2,7 @@
 #define PROJECTILE_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <box2d/box2d.h>
 #include <iostream>
 
@@ -24,8 +25,11 @@ public:
 
 private:
     SDL_Renderer* renderer;
+    Mix_Chunk* collisionSound;
     b2Body* body;
     SDL_Texture* texture;
+    SDL_Texture* explosionTexture; // Текстура взрыва
+    int explosionTimer = 0;       // Таймер для отсчета времени взрыва
     int textureWidth, textureHeight;
     bool markedForDeletion = false; // Флаг для удаления снаряда
     bool hasCollided = false;

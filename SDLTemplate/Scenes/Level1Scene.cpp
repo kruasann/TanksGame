@@ -171,9 +171,9 @@ void Level1Scene::update() {
     // Установка временного шага для физической симуляции
     const float timeStep = 1.0f / 60.0f;
     // Установка количества итераций для расчета скорости тел в физическом мире
-    const int32 velocityIterations = 6;
+    const int32 velocityIterations = 100;
     // Установка количества итераций для расчета позиций тел в физическом мире
-    const int32 positionIterations = 2;
+    const int32 positionIterations = 100;
     // Обновление состояния физического мира на один временной шаг
     physicsWorld->Step(timeStep, velocityIterations, positionIterations);
 
@@ -183,10 +183,9 @@ void Level1Scene::update() {
     }
 
     if (tank) {
-        auto& projectiles = tank->getProjectiles(); // Получаем список снарядов
+        auto& projectiles = tank->getProjectiles();
         for (auto it = projectiles.begin(); it != projectiles.end();) {
-            (*it)->update();
-
+            (*it)->update(); // Убедитесь, что этот вызов присутствует
             if ((*it)->isMarkedForDeletion()) {
                 delete* it;
                 it = projectiles.erase(it);
@@ -196,6 +195,7 @@ void Level1Scene::update() {
             }
         }
     }
+
 }
 
 // Обновление состояния сцены
