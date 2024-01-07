@@ -14,10 +14,11 @@ Projectile::Projectile(SDL_Renderer* ren, b2World* world, float x, float y, floa
     bodyDef.position.Set(x, y);
     bodyDef.angle = angle * M_PI / 180.0f;
     body = world->CreateBody(&bodyDef);
-    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 
     b2CircleShape circleShape;
     circleShape.m_radius = 5.0f / 5.0f; // Adjust size as needed
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
@@ -53,7 +54,7 @@ void Projectile::collide() {
     Mix_PlayChannel(-1, collisionSound, 0);
     texture = explosionTexture; // Смена на текстуру взрыва
     hasCollided = true;
-    explosionTimer = 20; // Установка таймера для отображения взрыва
+    explosionTimer = 50; // Установка таймера для отображения взрыва
 }
 
 void Projectile::update() {

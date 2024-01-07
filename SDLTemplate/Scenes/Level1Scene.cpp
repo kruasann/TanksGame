@@ -20,7 +20,9 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
     backgroundTexture(loadTexture("Assets/Sprites/Level1_background.png", renderer)),
     pauseButton(loadTexture("Assets\\Sprites\\Buttons\\pause_button.png", renderer),
         loadTexture("Assets\\Sprites\\Buttons\\pause_button_hover.png", renderer),
-        25, 25, &soundPlayer) {
+        25, 25, &soundPlayer), 
+    targetsHit(0),
+    score(0), pointsPerTarget(100) {
 
     // Создание физического мира Box2D с гравитацией
     createPhysicsWorld();
@@ -104,6 +106,12 @@ bool Level1Scene::isValidPosition(const std::vector<Target*>& targets, float x, 
     // Добавьте здесь дополнительные проверки для стен и пола
     return true;
 }
+
+void Level1Scene::onTargetHit() {
+    targetsHit++;
+    score += 100; // или любое другое количество очков за мишень
+}
+
 
 // Рендеринг террейна
 // Создание физического мира Box2D
@@ -230,10 +238,11 @@ void Level1Scene::update() {
         tank->update();
     }
 
+    // Обновление снарядов
     if (tank) {
         auto& projectiles = tank->getProjectiles();
         for (auto it = projectiles.begin(); it != projectiles.end();) {
-            (*it)->update(); // Убедитесь, что этот вызов присутствует
+            (*it)->update();
             if ((*it)->isMarkedForDeletion()) {
                 delete* it;
                 it = projectiles.erase(it);
@@ -241,6 +250,19 @@ void Level1Scene::update() {
             else {
                 ++it;
             }
+        }
+    }
+
+    // Обновление мишеней
+    for (auto it = targets.begin(); it != targets.end();) {
+        if ((*it)->isHit()) {
+            delete* it; // Удаление мишени при попадании
+            it = targets.erase(it);
+            score += pointsPerTarget; // Увеличиваем счет
+            targetsHit++; // Увеличиваем счетчик попаданий
+        }
+        else {
+            ++it;
         }
     }
 
@@ -270,6 +292,10 @@ void Level1Scene::render() {
         tank->render();
     }
     renderTargets();
+
+    std::string statusText = std::to_string(targetsHit) + "/3 Targets Hit | Score: " + std::to_string(score);
+    renderText(renderer, statusText, 630, 50, 32);
+
     // Показываем отрендеренное на экране
     SDL_RenderPresent(renderer);
 }

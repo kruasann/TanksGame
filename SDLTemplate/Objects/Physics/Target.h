@@ -11,6 +11,9 @@ public:
 
     SDL_Texture* targetTexture; // Текстура мишени
     void render(SDL_Renderer* renderer);
+    void markForDeletion() {
+        markedForDeletion = true;
+    }
     bool isHit() const;
     void markAsHit();
 
@@ -21,6 +24,7 @@ private:
     b2Body* body;
     float radius;
     bool hit;
+    bool markedForDeletion = false;
 };
 
 #endif // TARGET_H

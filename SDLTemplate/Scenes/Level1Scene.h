@@ -38,6 +38,7 @@ public:
     void createTargets();   // Метод для создания мишеней
     void renderTargets();   // Метод для рендеринга мишеней
     bool isValidPosition(const std::vector<Target*>& targets, float x, float y, float radius);
+    void onTargetHit();
 
     // Запуск музыки на сцене
     void startMusic();
@@ -48,6 +49,9 @@ public:
 private:
     bool musicStarted = false; // Флаг, указывающий, началась ли музыка
     bool pauseEnabled = false; // Флаг, указывающий, включена ли пауза
+    int targetsHit;   // Количество пораженных мишеней
+    int score;
+    int pointsPerTarget; // Очки за одну мишень
     SDL_Renderer* renderer;    // Рендерер SDL
     SDL_Texture* backgroundTexture; // Текстура фона
     std::vector<Target*> targets; // Вектор для хранения мишеней

@@ -4,11 +4,13 @@
 
 // Подключение необходимых библиотек
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 
 // Объявление функций вспомогательного модуля
 void renderTexture(SDL_Texture* tex, SDL_Renderer* ren, int x, int y); // Отрисовка текстуры
 SDL_Texture* loadTexture(const std::string& file, SDL_Renderer* ren); // Загрузка текстуры из файла
+void renderText(SDL_Renderer* renderer, const std::string& text, int x, int y, int fontSize); // Функция для отрисовки текста
 
 // Конец защиты от многократного включения
 #endif // UTILS_H

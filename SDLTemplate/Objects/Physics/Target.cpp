@@ -16,6 +16,8 @@ Target::Target(b2World* world, float x, float y, float radius, SDL_Renderer* ren
     b2CircleShape circleShape;
     circleShape.m_radius = radius;
 
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
     body->CreateFixture(&fixtureDef);

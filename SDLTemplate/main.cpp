@@ -32,6 +32,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // Инициализация SDL_ttf
+    if (TTF_Init() == -1) {
+        std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
+
     // Создание окна с указанными параметрами
     SDL_Window* window = SDL_CreateWindow("Game Menu", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, 1024, 1024, SDL_WINDOW_SHOWN);
@@ -108,6 +115,7 @@ int main(int argc, char* argv[]) {
     SDL_DestroyRenderer(renderer);
     Mix_CloseAudio();
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
 
     return 0;

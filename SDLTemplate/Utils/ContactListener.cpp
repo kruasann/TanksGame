@@ -2,17 +2,26 @@
 #include <iostream>
 
 void ContactListener::BeginContact(b2Contact* contact) {
-    std::cout << "BeginContact called." << std::endl;
     b2Fixture* fixtureA = contact->GetFixtureA();
     b2Fixture* fixtureB = contact->GetFixtureB();
 
-    Projectile* projectileA = reinterpret_cast<Projectile*>(fixtureA->GetBody()->GetUserData().pointer);
-    Projectile* projectileB = reinterpret_cast<Projectile*>(fixtureB->GetBody()->GetUserData().pointer);
+    // ѕолучение пользовательских данных
+    auto userDataA = reinterpret_cast<void*>(fixtureA->GetBody()->GetUserData().pointer);
+    auto userDataB = reinterpret_cast<void*>(fixtureB->GetBody()->GetUserData().pointer);
 
-    if (projectileA) {
+    Projectile* projectileA = static_cast<Projectile*>(userDataA);
+    Projectile* projectileB = static_cast<Projectile*>(userDataB);
+    Target* targetA = static_cast<Target*>(userDataA);
+    Target* targetB = static_cast<Target*>(userDataB);
+
+    // ѕроверка и обработка столкновений
+    if (projectileA && !projectileA->isMarkedForDeletion() && targetB && !targetB->isHit()) {
         projectileA->collide();
+        targetB->markAsHit();
     }
-    else if (projectileB) {
+    else if (projectileB && !projectileB->isMarkedForDeletion() && targetA && !targetA->isHit()) {
         projectileB->collide();
+        targetA->markAsHit();
     }
 }
+

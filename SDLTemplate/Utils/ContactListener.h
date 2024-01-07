@@ -3,6 +3,7 @@
 
 #include <box2d/box2d.h>
 #include "../Assets/Projectile.h" // Импорт определения класса Projectile
+#include "../Objects/Physics/Target.h"
 
 // Класс ContactListener, наследуемый от b2ContactListener
 class ContactListener : public b2ContactListener {
