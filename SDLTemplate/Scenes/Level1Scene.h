@@ -11,7 +11,8 @@
 #include "../Utils/SoundPlayer.h"
 #include "../Utils/ContactListener.h"
 #include "../Objects/button.h"
-#include "../Objects/Physics/PhysicalEntity.h" // Добавлен для использования класса PhysicalEntity
+#include "../Objects/Physics/PhysicalEntity.h"
+#include "../Objects/Physics/Target.h"
 
 class Level1Scene {
 public:
@@ -34,6 +35,10 @@ public:
     // Отрисовка сцены
     void render();
 
+    void createTargets();   // Метод для создания мишеней
+    void renderTargets();   // Метод для рендеринга мишеней
+    bool isValidPosition(const std::vector<Target*>& targets, float x, float y, float radius);
+
     // Запуск музыки на сцене
     void startMusic();
 
@@ -45,6 +50,7 @@ private:
     bool pauseEnabled = false; // Флаг, указывающий, включена ли пауза
     SDL_Renderer* renderer;    // Рендерер SDL
     SDL_Texture* backgroundTexture; // Текстура фона
+    std::vector<Target*> targets; // Вектор для хранения мишеней
     Button pauseButton;             // Кнопка паузы
     MusicPlayer& musicPlayer;       // Плеер музыки
     SoundPlayer& soundPlayer;       // Плеер звуков

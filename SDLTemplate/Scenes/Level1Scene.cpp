@@ -6,6 +6,8 @@
 #include "../Objects/button.h"
 #include <iostream>
 #include <vector>
+#include <random>
+#include <chrono>
 
 const float SCALE = 5.0f; // Коэффициент масштабирования между Box2D и пикселями
 
@@ -37,6 +39,8 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
 
     myContactListener = new ContactListener();
     physicsWorld->SetContactListener(myContactListener);
+
+    createTargets();
 }
 
 // Деструктор класса Level1Scene
@@ -50,9 +54,55 @@ Level1Scene::~Level1Scene() {
         tank = nullptr;
     }
 
+    for (auto target : targets) {
+        delete target;
+    }
+
     // Освобождение ресурсов физического мира Box2D
     delete myContactListener;
     delete physicsWorld;
+}
+
+void Level1Scene::createTargets() {
+    float minX = 10.0f, maxX = 180.0f; // Настройте эти значения в соответствии с размерами вашей карты
+    float minY = 10.0f, maxY = 90.0f;
+    float radius = 4.0f; // Установите радиус мишени
+
+    // Получение текущего времени в миллисекундах для инициализации генератора
+    auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+
+    for (int i = 0; i < 3; ++i) {
+        float x, y;
+        do {
+            std::uniform_real_distribution<> disX(minX + radius, maxX - radius);
+            std::uniform_real_distribution<> disY(minY + radius, maxY - radius);
+
+            x = disX(gen);
+            y = disY(gen);
+        } while (!isValidPosition(targets, x, y, radius));
+
+        targets.push_back(new Target(physicsWorld, x, y, radius, renderer));
+    }
+}
+
+
+void Level1Scene::renderTargets() {
+    for (const auto& target : targets) {
+        target->render(renderer);
+    }
+}
+
+bool Level1Scene::isValidPosition(const std::vector<Target*>& targets, float x, float y, float radius) {
+    for (const auto& target : targets) {
+        float dx = target->getX() - x;
+        float dy = target->getY() - y;
+        if (sqrt(dx * dx + dy * dy) < 2 * radius) {
+            return false; // Слишком близко к другой мишени
+        }
+    }
+    // Добавьте здесь дополнительные проверки для стен и пола
+    return true;
 }
 
 // Рендеринг террейна
@@ -129,8 +179,6 @@ void Level1Scene::renderTerrain() {
         }
     }
 }
-
-
 
 
 // Обработка событий
@@ -221,6 +269,7 @@ void Level1Scene::render() {
     if (tank) {
         tank->render();
     }
+    renderTargets();
     // Показываем отрендеренное на экране
     SDL_RenderPresent(renderer);
 }
