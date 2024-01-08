@@ -6,7 +6,7 @@ const float SCALE = 5.0f;
 Tank::Tank(SDL_Renderer* ren, b2World* world, float x, float y)
     : renderer(ren), movingLeft(false), movingRight(false),
     rotatingBarrelUp(false), rotatingBarrelDown(false),
-    speed(8.0f), barrelAngle(0.0f), rotationSpeed(1.0f), fireForce(1000000.0f) {
+    speed(8.0f), barrelAngle(0.0f), rotationSpeed(1.0f), fireForce(3000000.0f) {
 
     texture = loadTexture("Assets/Sprites/Tanks_parts/tracks.png", renderer);
     barrelTexture = loadTexture("Assets/Sprites/Tanks_parts/barrel.png", renderer);

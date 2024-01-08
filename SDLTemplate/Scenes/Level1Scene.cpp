@@ -35,7 +35,7 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
 
     // Инициализация начальной позиции танка
     float initialXPosition = 400.0f / SCALE;
-    float initialYPosition = 400.0f / SCALE;
+    float initialYPosition = 600.0f / SCALE;
 
     // Создание танка
     tank = new Tank(renderer, physicsWorld, initialXPosition, initialYPosition);
@@ -68,7 +68,7 @@ Level1Scene::~Level1Scene() {
 
 void Level1Scene::createTargets() {
     float minX = 10.0f, maxX = 180.0f; // Настройте эти значения в соответствии с размерами вашей карты
-    float minY = 10.0f, maxY = 90.0f;
+    float minY = 20.0f, maxY = 100.0f;
     float radius = 4.0f; // Установите радиус мишени
 
     // Получение текущего времени в миллисекундах для инициализации генератора
@@ -119,7 +119,7 @@ void Level1Scene::onTargetHit() {
 // Создание физического мира Box2D
 void Level1Scene::createPhysicsWorld() {
     // Установка гравитации
-    b2Vec2 gravity(0.0f, 10.0f * SCALE); // Создание вектора гравитации, где 10.0f - ускорение свободного падения по оси Y (x, y)
+    b2Vec2 gravity(0.0f, 15.0f * SCALE); // Создание вектора гравитации, где 10.0f - ускорение свободного падения по оси Y (x, y)
     physicsWorld = new b2World(gravity); // Инициализация физического мира с заданной гравитацией
 }
 
