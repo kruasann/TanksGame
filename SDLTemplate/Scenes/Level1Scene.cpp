@@ -12,15 +12,16 @@
 const float SCALE = 5.0f; // Коэффициент масштабирования между Box2D и пикселями
 
 // Конструктор класса Level1Scene
-Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
+Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled)
     : renderer(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     musicStarted(false),
+    pauseEnabled(pauseEnabled),
     backgroundTexture(loadTexture("Assets/Sprites/Level1_background.png", renderer)),
     pauseButton(loadTexture("Assets\\Sprites\\Buttons\\pause_button.png", renderer),
         loadTexture("Assets\\Sprites\\Buttons\\pause_button_hover.png", renderer),
-        25, 25, &soundPlayer), 
+        25, 25, &soundPlayer),
     targetsHit(0),
     score(0), pointsPerTarget(100) {
 
@@ -204,21 +205,16 @@ void Level1Scene::handleEvents(const SDL_Event& event, GameState& gameState) {
 
     if (event.type == SDL_MOUSEBUTTONDOWN) {
         if (pauseButton.isHovered) {
-            pauseButton.isClicked = true;
+            pauseEnabled = true; // Только устанавливаем флаг pauseEnabled
             gameState = GameState::Pause;
         }
     }
 
     // Обработка нажатия клавиши ESC
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
-        if (gameState == GameState::Pause) {
-            // Если игра уже на паузе, возвращаемся к игровой сцене
-            gameState = GameState::Level1;
-        }
-        else {
-            // Если игра не на паузе, переходим в режим паузы
-            gameState = GameState::Pause;
-        }
+        // Если игра не на паузе, переходим в режим паузы
+        pauseEnabled = true;
+        gameState = GameState::Pause;
     }
 }
 
@@ -272,11 +268,11 @@ void Level1Scene::update() {
 // Обновление состояния сцены
 GameState Level1Scene::updateState() {
     if (pauseEnabled) {
-        pauseEnabled = true;
         return GameState::Pause;
     }
 
     // Возвращаем текущее состояние игры
+    pauseEnabled = false;
     return GameState::Level1;
 }
 

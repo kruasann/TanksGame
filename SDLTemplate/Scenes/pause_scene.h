@@ -12,7 +12,7 @@
 class PauseMenuScene {
 public:
     // Конструктор.
-    PauseMenuScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
+    PauseMenuScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled);
     // Деструктор.
     ~PauseMenuScene();
     // Обработка событий.
@@ -33,6 +33,7 @@ private:
     Button buttonSound;
     Slider sliderMusic;
     Slider sliderSound;
+    bool& pauseEnabled;
     bool musicEnabled = true;
     bool soundEnabled = true;
 };

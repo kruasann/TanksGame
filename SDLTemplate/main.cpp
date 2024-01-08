@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
+#include <memory>
 
 // Подключение заголовочных файлов состояний игры и сцен
 #include "game_states.h"
@@ -53,8 +54,9 @@ int main(int argc, char* argv[]) {
     // Создание сцен для разных состояний игры
     MainMenuScene mainMenuScene(renderer, musicPlayer, soundPlayer);
     SettingsScene settingsScene(renderer, musicPlayer, soundPlayer);
-    Level1Scene level1Scene(renderer, musicPlayer, soundPlayer);
-    PauseMenuScene pauseScene(renderer, musicPlayer, soundPlayer);
+    std::unique_ptr<Level1Scene> level1Scene;
+    bool pauseEnabled = false;
+    PauseMenuScene pauseScene(renderer, musicPlayer, soundPlayer, pauseEnabled);
 
     // Главный цикл игры
     bool running = true;
@@ -63,13 +65,20 @@ int main(int argc, char* argv[]) {
     // Объект для обработки событий SDL
     SDL_Event event;
     while (running) {
-        level1Scene.update();
+
+        // Обновление сцены только если она существует
+        if (level1Scene) {
+            level1Scene->update();
+        }
+
         // Опрос событий SDL
         while (SDL_PollEvent(&event)) {
             // Обработка события выхода из игры
             if (event.type == SDL_QUIT) {
                 running = false;
             }
+
+            std::cout << "Pause: " << (pauseEnabled) << std::endl;
 
             // Обработка событий в зависимости от текущего состояния игры
             switch (gameState) {
@@ -82,12 +91,20 @@ int main(int argc, char* argv[]) {
                 gameState = settingsScene.updateState();
                 break;
             case GameState::Level1:
-                level1Scene.handleEvents(event, gameState);
-                level1Scene.updateState();
+                if (!level1Scene) {
+                    // Создание сцены, если она еще не создана
+                    level1Scene = std::make_unique<Level1Scene>(renderer, musicPlayer, soundPlayer, pauseEnabled);
+                }
+                level1Scene->handleEvents(event, gameState);
+                gameState = level1Scene->updateState();
                 break;
             case GameState::Pause:
                 pauseScene.handleEvents(event, gameState);
                 gameState = pauseScene.updateState();
+                if (gameState == GameState::MainMenu) {
+                    // Удаляем сцену при возвращении в главное меню
+                    level1Scene.reset();
+                }
                 break;
             case GameState::Exit:
                 running = false;
@@ -103,7 +120,9 @@ int main(int argc, char* argv[]) {
             settingsScene.render();
             break;
         case GameState::Level1:
-            level1Scene.render();
+            if (level1Scene) {
+                level1Scene->render();
+            }
             break;
         case GameState::Pause:
             pauseScene.render();

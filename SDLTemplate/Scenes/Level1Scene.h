@@ -17,7 +17,7 @@
 class Level1Scene {
 public:
     // Конструктор класса, инициализирующий сцену уровня 1
-    Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
+    Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled);
 
     // Деструктор класса, освобождающий ресурсы
     ~Level1Scene();
@@ -50,7 +50,7 @@ public:
 
 private:
     bool musicStarted = false; // Флаг, указывающий, началась ли музыка
-    bool pauseEnabled = false; // Флаг, указывающий, включена ли пауза
+    bool& pauseEnabled;
     int targetsHit;   // Количество пораженных мишеней
     int score;
     int pointsPerTarget; // Очки за одну мишень

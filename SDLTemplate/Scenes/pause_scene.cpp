@@ -11,18 +11,27 @@
 #include <iostream>
 
 // Конструктор сцены паузы.
-PauseMenuScene::PauseMenuScene(SDL_Renderer* ren, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(ren), musicPlayer(musicPlayer), soundPlayer(soundPlayer),
-    // Инициализация кнопок.
-    resumeButton(loadTexture("Assets\\Sprites\\Buttons\\Resume_button.png", renderer), loadTexture("Assets\\Sprites\\Buttons\\Resume_button_hover.png", renderer), 400, 500, &soundPlayer),
-    returnToMenuButton(loadTexture("Assets\\Sprites\\Buttons\\Menu_button.png", renderer), loadTexture("Assets\\Sprites\\Buttons\\Menu_button_hover.png", renderer), 400, 600, &soundPlayer),
-    buttonMusic(loadTexture("Assets\\Sprites\\Buttons\\Music_button.png", renderer),
-        loadTexture("Assets\\Sprites\\Buttons\\Music_button.png", renderer),
-        275, 100, nullptr, loadTexture("Assets\\Sprites\\Buttons\\MuteMusic_button.png", renderer), true),
-    buttonSound(loadTexture("Assets\\Sprites\\Buttons\\Sound_button.png", renderer),
-        loadTexture("Assets\\Sprites\\Buttons\\Sound_button.png", renderer),
-        275, 200, nullptr, loadTexture("Assets\\Sprites\\Buttons\\MuteSound_button.png", renderer), true),
-    // Инициализация слайдеров для громкости.
+PauseMenuScene::PauseMenuScene(SDL_Renderer* ren, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled)
+    : renderer(ren),
+    musicPlayer(musicPlayer),
+    soundPlayer(soundPlayer),
+    pauseEnabled(pauseEnabled),
+    resumeButton(loadTexture("Assets/Sprites/Buttons/Resume_button.png", renderer),
+        loadTexture("Assets/Sprites/Buttons/Resume_button_hover.png", renderer),
+        400, 500, &soundPlayer),
+    returnToMenuButton(loadTexture("Assets/Sprites/Buttons/Menu_button.png", renderer),
+        loadTexture("Assets/Sprites/Buttons/Menu_button_hover.png", renderer),
+        400, 600, &soundPlayer),
+    buttonMusic(loadTexture("Assets/Sprites/Buttons/Music_button.png", renderer),
+        loadTexture("Assets/Sprites/Buttons/Music_button.png", renderer),
+        275, 100, nullptr,
+        loadTexture("Assets/Sprites/Buttons/MuteMusic_button.png", renderer),
+        true),
+    buttonSound(loadTexture("Assets/Sprites/Buttons/Sound_button.png", renderer),
+        loadTexture("Assets/Sprites/Buttons/Sound_button.png", renderer),
+        275, 200, nullptr,
+        loadTexture("Assets/Sprites/Buttons/MuteSound_button.png", renderer),
+        true),
     sliderMusic(375, 125, 300, 20, 0, 100, musicPlayer.currentVolume()),
     sliderSound(375, 225, 300, 20, 0, 100, soundPlayer.getCurrentVolume())
 {
@@ -52,12 +61,18 @@ void PauseMenuScene::handleEvents(const SDL_Event& event, GameState& gameState) 
     buttonSound.isHovered = SDL_PointInRect(&mousePoint, &buttonSound.position);
 
     // Обработка нажатия кнопки мыши.
+    if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+        resumeButton.isClicked = true; // Используйте флаг кнопки "Продолжить" для выхода из паузы
+        pauseEnabled = false;
+    }
     if (event.type == SDL_MOUSEBUTTONDOWN) {
         if (resumeButton.isHovered) {
             resumeButton.isClicked = true;
+            pauseEnabled = false;
         }
         if (returnToMenuButton.isHovered) {
             returnToMenuButton.isClicked = true;
+            pauseEnabled = false;
         }
         // Переключение музыки.
         if (buttonMusic.isHovered) {
