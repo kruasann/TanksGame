@@ -11,6 +11,7 @@ enum class GameState {
     Level3,
     Death,
     Win,
+    Defeat,
     Exit
 };
 

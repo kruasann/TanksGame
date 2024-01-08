@@ -9,6 +9,7 @@
 #include "Scenes/settings_scene.h"
 #include "Scenes/pause_scene.h"
 #include "Scenes/Level1Scene.h"
+#include "Scenes/WinScene.h"
 
 // Подключение объектов интерфейса и утилит
 #include "Objects/button.h"
@@ -57,6 +58,7 @@ int main(int argc, char* argv[]) {
     std::unique_ptr<Level1Scene> level1Scene;
     bool pauseEnabled = false;
     PauseMenuScene pauseScene(renderer, musicPlayer, soundPlayer, pauseEnabled);
+    WinScene winScene(renderer, musicPlayer, soundPlayer);
 
     // Главный цикл игры
     bool running = true;
@@ -106,6 +108,10 @@ int main(int argc, char* argv[]) {
                     level1Scene.reset();
                 }
                 break;
+            case GameState::Win:
+                winScene.handleEvents(event, gameState);
+                break;
+                gameState = winScene.updateState();
             case GameState::Exit:
                 running = false;
             }
@@ -126,6 +132,9 @@ int main(int argc, char* argv[]) {
             break;
         case GameState::Pause:
             pauseScene.render();
+            break;
+        case GameState::Win:
+            winScene.render();
             break;
         }
     }

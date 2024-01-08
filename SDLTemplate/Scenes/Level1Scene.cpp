@@ -271,6 +271,11 @@ GameState Level1Scene::updateState() {
         return GameState::Pause;
     }
 
+    if (targetsHit == totalTargets) {
+        // Если все цели поражены, переключаемся на сцену победы
+        return GameState::Win;
+    }
+
     // Возвращаем текущее состояние игры
     pauseEnabled = false;
     return GameState::Level1;
