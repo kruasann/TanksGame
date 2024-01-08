@@ -74,7 +74,8 @@ void Level1Scene::createTargets() {
     auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
 
-    for (int i = 0; i < 3; ++i) {
+    totalTargets = 6; // Установите общее количество мишеней
+    for (int i = 0; i < totalTargets; ++i) {
         float x, y;
         do {
             std::uniform_real_distribution<> disX(minX + radius, maxX - radius);
@@ -293,8 +294,8 @@ void Level1Scene::render() {
     }
     renderTargets();
 
-    std::string statusText = std::to_string(targetsHit) + "/3 Targets Hit | Score: " + std::to_string(score);
-    renderText(renderer, statusText, 630, 50, 32);
+    std::string statusText = std::to_string(targetsHit) + "/" + std::to_string(totalTargets) + " Targets Hit | Score: " + std::to_string(score);
+    renderText(renderer, statusText, 620, 50, 32);
 
     // Показываем отрендеренное на экране
     SDL_RenderPresent(renderer);

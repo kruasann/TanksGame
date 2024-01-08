@@ -46,6 +46,8 @@ public:
     // Проверка, началась ли музыка
     bool isMusicStarted() const;
 
+    int totalTargets = 0; // Количество мишеней на карте
+
 private:
     bool musicStarted = false; // Флаг, указывающий, началась ли музыка
     bool pauseEnabled = false; // Флаг, указывающий, включена ли пауза
