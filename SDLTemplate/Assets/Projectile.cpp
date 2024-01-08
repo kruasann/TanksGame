@@ -54,7 +54,7 @@ void Projectile::collide() {
     Mix_PlayChannel(-1, collisionSound, 0);
     texture = explosionTexture; // Смена на текстуру взрыва
     hasCollided = true;
-    explosionTimer = 10; // Установка таймера для отображения взрыва
+    explosionTimer = 1; // Установка таймера для отображения взрыва
 }
 
 void Projectile::update() {

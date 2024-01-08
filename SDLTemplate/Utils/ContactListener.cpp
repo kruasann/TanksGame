@@ -23,5 +23,11 @@ void ContactListener::BeginContact(b2Contact* contact) {
         projectileB->collide();
         targetA->markAsHit();
     }
+    else if (projectileA) {
+        projectileA->collide();
+    }
+    else if (projectileB) {
+        projectileB->collide();
+    }
 }
 

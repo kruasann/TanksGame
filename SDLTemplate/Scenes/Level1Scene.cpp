@@ -119,7 +119,7 @@ void Level1Scene::onTargetHit() {
 // —оздание физического мира Box2D
 void Level1Scene::createPhysicsWorld() {
     // ”становка гравитации
-    b2Vec2 gravity(0.0f, 15.0f * SCALE); // —оздание вектора гравитации, где 10.0f - ускорение свободного падени€ по оси Y (x, y)
+    b2Vec2 gravity(0.0f, 12.0f * SCALE); // —оздание вектора гравитации, где 10.0f - ускорение свободного падени€ по оси Y (x, y)
     physicsWorld = new b2World(gravity); // »нициализаци€ физического мира с заданной гравитацией
 }
 
