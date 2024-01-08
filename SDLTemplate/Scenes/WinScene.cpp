@@ -1,6 +1,7 @@
 // WinScene.cpp
 #include "WinScene.h"
 #include "../Utils/Utils.h"
+#include <iostream>
 
 WinScene::WinScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
     : renderer(renderer),
@@ -28,7 +29,9 @@ void WinScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     returnToMenuButton.isHovered = SDL_PointInRect(&mousePoint, &returnToMenuButton.position);
 
     if (event.type == SDL_MOUSEBUTTONDOWN) {
+        std::cout << "Mouse Button Down at: " << x << ", " << y << std::endl;
         if (returnToMenuButton.isHovered) {
+            std::cout << "Button Clicked" << std::endl;
             returnToMenuButton.isClicked = true;
         }
     }
@@ -42,8 +45,8 @@ void WinScene::render() {
 }
 
 GameState WinScene::updateState() {
-    // Выход в главное меню.
     if (returnToMenuButton.isClicked) {
+        std::cout << "Returning to main menu from win scene" << std::endl;
         returnToMenuButton.isClicked = false;
         return GameState::MainMenu;
     }

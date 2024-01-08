@@ -23,7 +23,8 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
         loadTexture("Assets\\Sprites\\Buttons\\pause_button_hover.png", renderer),
         25, 25, &soundPlayer),
     targetsHit(0),
-    score(0), pointsPerTarget(100) {
+    score(0), 
+    pointsPerTarget(100) {
 
     // Создание физического мира Box2D с гравитацией
     createPhysicsWorld();
@@ -40,7 +41,7 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
     // Создание танка
     tank = new Tank(renderer, physicsWorld, initialXPosition, initialYPosition);
 
-    myContactListener = new ContactListener();
+    myContactListener = new ContactListener(soundPlayer);
     physicsWorld->SetContactListener(myContactListener);
 
     createTargets();

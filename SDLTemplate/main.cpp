@@ -110,8 +110,12 @@ int main(int argc, char* argv[]) {
                 break;
             case GameState::Win:
                 winScene.handleEvents(event, gameState);
-                break;
                 gameState = winScene.updateState();
+                if (gameState == GameState::MainMenu) {
+                    // Удаляем сцену при возвращении в главное меню
+                    level1Scene.reset();
+                }
+                break;
             case GameState::Exit:
                 running = false;
             }
