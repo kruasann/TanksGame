@@ -21,24 +21,27 @@
 // Основная функция программы
 int main(int argc, char* argv[]) {
     // Инициализация SDL и создание окна и рендерера
+    // Если SDL_Init вернет значение меньше 0, это указывает на ошибку.
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        // Вывод ошибки, если SDL не удалось инициализировать
+        // Вывод ошибки в stderr, если SDL не удалось инициализировать.
         std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-        return 1;
+        return 1; // Выход из программы с кодом ошибки 1
     }
 
     // Инициализация аудио подсистемы SDL
+    // Если Mix_OpenAudio вернет значение меньше 0, это указывает на ошибку.
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         // Вывод ошибки, если SDL_mixer не удалось инициализировать
         std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
-        return 1;
+        return 1; // Выход из программы с кодом ошибки 1
     }
 
     // Инициализация SDL_ttf
+    // Если TTF_Init вернет -1, это указывает на ошибку.
     if (TTF_Init() == -1) {
         std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
         SDL_Quit();
-        return 1;
+        return 1; // Выход из программы с кодом ошибки 1
     }
 
     // Создание окна с указанными параметрами

@@ -2,17 +2,18 @@
 #ifndef GAME_STATES_H
 #define GAME_STATES_H
 
+// Определение перечисления GameState, представляющего различные состояния игры.
 enum class GameState {
-    MainMenu,
-    Settings,
-    Pause,
-    Level1,
-    Level2,
-    Level3,
-    Death,
-    Win,
-    Defeat,
-    Exit
+    MainMenu, // Состояние главного меню
+    Settings, // Состояние настроек
+    Pause,    // Состояние паузы
+    Level1,   // Состояние первого уровня
+    Level2,   // Состояние второго уровня
+    Level3,   // Состояние третьего уровня
+    Death,    // Состояние проигрыша (смерти игрока)
+    Win,      // Состояние победы
+    Defeat,   // Состояние поражения
+    Exit      // Состояние выхода из игры
 };
 
 #endif // GAME_STATES_H

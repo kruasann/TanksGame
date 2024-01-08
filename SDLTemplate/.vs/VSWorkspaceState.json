@@ -2,15 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\Assets",
-    "\\Assets\\Fonts",
-    "\\Assets\\Sprites",
     "\\Assets\\Sprites\\Tanks_parts",
     "\\Objects",
     "\\Objects\\Physics",
     "\\Scenes",
-    "\\Scenes\\settings_scene.cpp",
-    "\\Utils"
+    "\\Scenes\\settings_scene.cpp"
   ],
-  "SelectedNode": "\\PhysicalObject.h",
+  "SelectedNode": "\\Assets\\tank.cpp",
   "PreviewInSolutionExplorer": false
 }

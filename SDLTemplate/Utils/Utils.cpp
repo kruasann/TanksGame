@@ -7,8 +7,8 @@
 // Функция для отрисовки текстуры на экране
 void renderTexture(SDL_Texture* tex, SDL_Renderer* ren, int x, int y) {
     SDL_Rect dst; // Создание прямоугольника для отрисовки
-    dst.x = x; // Установка координаты X
-    dst.y = y; // Установка координаты Y
+    dst.x = x;    // Установка координаты X
+    dst.y = y;    // Установка координаты Y
     SDL_QueryTexture(tex, NULL, NULL, &dst.w, &dst.h); // Получение размеров текстуры
     SDL_RenderCopy(ren, tex, NULL, &dst); // Копирование текстуры в рендерер
 }
@@ -24,31 +24,31 @@ SDL_Texture* loadTexture(const std::string& file, SDL_Renderer* ren) {
 
 // Функция для отрисовки текста
 void renderText(SDL_Renderer* renderer, const std::string& text, int x, int y, int fontSize) {
-    TTF_Font* font = TTF_OpenFont("Assets/Fonts/Raleway-Italic.ttf", fontSize);
+    TTF_Font* font = TTF_OpenFont("Assets/Fonts/Raleway-Italic.ttf", fontSize); // Загрузка шрифта
     if (font == nullptr) {
         std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
         return;
     }
 
-    SDL_Color color = { 0, 0, 0, 255 }; // Белый цвет
-    SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), color);
+    SDL_Color color = { 0, 0, 0, 255 }; // Установка цвета текста
+    SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), color); // Создание поверхности с текстом
     if (surface == nullptr) {
         TTF_CloseFont(font);
         std::cerr << "Failed to create text surface: " << TTF_GetError() << std::endl;
         return;
     }
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface); // Создание текстуры из поверхности
+    SDL_FreeSurface(surface); // Освобождение памяти, занятой поверхностью
     if (texture == nullptr) {
         TTF_CloseFont(font);
         std::cerr << "Failed to create text texture: " << SDL_GetError() << std::endl;
         return;
     }
 
-    SDL_Rect renderQuad = { x, y, surface->w, surface->h };
-    SDL_RenderCopy(renderer, texture, nullptr, &renderQuad);
+    SDL_Rect renderQuad = { x, y, surface->w, surface->h }; // Определение области для рендеринга текстуры
+    SDL_RenderCopy(renderer, texture, nullptr, &renderQuad); // Копирование текстуры в рендерер
 
-    SDL_DestroyTexture(texture);
-    TTF_CloseFont(font);
+    SDL_DestroyTexture(texture); // Уничтожение текстуры
+    TTF_CloseFont(font);         // Закрытие шрифта
 }

@@ -68,11 +68,12 @@ Level1Scene::~Level1Scene() {
 }
 
 void Level1Scene::createTargets() {
-    float minX = 10.0f, maxX = 180.0f; // Настройте эти значения в соответствии с размерами вашей карты
+    // Определение границ для размещения мишеней
+    float minX = 10.0f, maxX = 180.0f; // Установите эти значения в соответствии с размерами вашей карты
     float minY = 20.0f, maxY = 100.0f;
     float radius = 4.0f; // Установите радиус мишени
 
-    // Получение текущего времени в миллисекундах для инициализации генератора
+    // Инициализация генератора случайных чисел
     auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
 
@@ -80,35 +81,41 @@ void Level1Scene::createTargets() {
     for (int i = 0; i < totalTargets; ++i) {
         float x, y;
         do {
+            // Генерация случайных координат для мишени
             std::uniform_real_distribution<> disX(minX + radius, maxX - radius);
             std::uniform_real_distribution<> disY(minY + radius, maxY - radius);
 
             x = disX(gen);
             y = disY(gen);
-        } while (!isValidPosition(targets, x, y, radius));
+        } while (!isValidPosition(targets, x, y, radius)); // Проверка валидности позиции мишени
 
+        // Создание новой мишени и добавление ее в список мишеней
         targets.push_back(new Target(physicsWorld, x, y, radius, renderer));
     }
 }
 
 
+
 void Level1Scene::renderTargets() {
     for (const auto& target : targets) {
-        target->render(renderer);
+        target->render(renderer); // Вызов метода render для каждой мишени
     }
 }
 
+
 bool Level1Scene::isValidPosition(const std::vector<Target*>& targets, float x, float y, float radius) {
     for (const auto& target : targets) {
+        // Расчет расстояния между текущей мишенью и потенциальной позицией новой мишени
         float dx = target->getX() - x;
         float dy = target->getY() - y;
         if (sqrt(dx * dx + dy * dy) < 2 * radius) {
-            return false; // Слишком близко к другой мишени
+            return false; // Позиция считается невалидной, если новая мишень слишком близко к другой
         }
     }
-    // Добавьте здесь дополнительные проверки для стен и пола
+    // Место подходит для размещения мишени, если оно не слишком близко к другим мишеням
     return true;
 }
+
 
 void Level1Scene::onTargetHit() {
     targetsHit++;
@@ -177,7 +184,7 @@ void Level1Scene::renderTerrain() {
                 SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); // Установка серого цвета для стен
             }
             else {
-                SDL_SetRenderDrawColor(renderer, 45, 158, 230, 255); // Установка голубого цвета для земли
+                SDL_SetRenderDrawColor(renderer, 104, 33, 122, 255); // Установка фиолетового цвета для земли
             }
 
             SDL_Rect rect;
@@ -232,35 +239,39 @@ void Level1Scene::update() {
     physicsWorld->Step(timeStep, velocityIterations, positionIterations);
 
 
+    // Проверка существования объекта танка и его обновление.
     if (tank) {
-        tank->update();
+        tank->update(); // Вызывается метод update() объекта tank, обновляя его состояние.
     }
 
-    // Обновление снарядов
+    // Обновление снарядов, выпущенных танком.
     if (tank) {
-        auto& projectiles = tank->getProjectiles();
+        auto& projectiles = tank->getProjectiles(); // Получение ссылки на коллекцию снарядов танка.
         for (auto it = projectiles.begin(); it != projectiles.end();) {
-            (*it)->update();
+            (*it)->update(); // Обновление состояния каждого снаряда.
+
+            // Проверка, следует ли удалить снаряд.
             if ((*it)->isMarkedForDeletion()) {
-                delete* it;
-                it = projectiles.erase(it);
+                delete* it; // Удаление объекта снаряда из памяти.
+                it = projectiles.erase(it); // Удаление снаряда из коллекции и получение нового итератора.
             }
             else {
-                ++it;
+                ++it; // Переход к следующему снаряду, если он не удален.
             }
         }
     }
 
-    // Обновление мишеней
+    // Обновление мишеней.
     for (auto it = targets.begin(); it != targets.end();) {
-        if ((*it)->isHit()) {
-            delete* it; // Удаление мишени при попадании
-            it = targets.erase(it);
-            score += pointsPerTarget; // Увеличиваем счет
-            targetsHit++; // Увеличиваем счетчик попаданий
+        if ((*it)->isHit()) { // Проверка, была ли мишень поражена.
+            delete* it; // Удаление мишени из памяти при её поражении.
+            it = targets.erase(it); // Удаление мишени из списка и получение нового итератора.
+
+            score += pointsPerTarget; // Увеличение общего счета игрока.
+            targetsHit++; // Увеличение счетчика попаданий по мишеням.
         }
         else {
-            ++it;
+            ++it; // Переход к следующей мишени, если текущая не была поражена.
         }
     }
 
@@ -291,9 +302,11 @@ void Level1Scene::render() {
     pauseButton.render(renderer);
     // Вызываем функцию рендеринга террейна
     renderTerrain();
+
     if (tank) {
         tank->render();
     }
+
     renderTargets();
 
     std::string statusText = std::to_string(targetsHit) + "/" + std::to_string(totalTargets) + " Targets Hit | Score: " + std::to_string(score);

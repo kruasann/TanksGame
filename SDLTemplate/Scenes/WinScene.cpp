@@ -1,54 +1,52 @@
-// WinScene.cpp
 #include "WinScene.h"
 #include "../Utils/Utils.h"
 #include <iostream>
 
+// Конструктор класса WinScene.
 WinScene::WinScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
     : renderer(renderer),
     returnToMenuButton(loadTexture("Assets/Sprites/Buttons/Menu_button.png", renderer),
         loadTexture("Assets/Sprites/Buttons/Menu_button_hover.png", renderer),
         400, 600, &soundPlayer),
     backgroundTexture(loadTexture("Assets/Sprites/Win_Menu.png", renderer)) {
-    // Другие настройки
 }
 
-
-// Деструктор сцены паузы.
+// Деструктор класса WinScene.
 WinScene::~WinScene() {
     if (backgroundTexture) {
-        SDL_DestroyTexture(backgroundTexture);
+        SDL_DestroyTexture(backgroundTexture); // Освобождение ресурсов фоновой текстуры
     }
 }
 
+// Обработка событий в сцене победы.
 void WinScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     int x, y;
-    SDL_GetMouseState(&x, &y);
-    SDL_Point mousePoint = { x, y };
+    SDL_GetMouseState(&x, &y); // Получение состояния мыши
+    SDL_Point mousePoint = { x, y }; // Точка положения курсора
 
-    // Определение, находится ли курсор на кнопках.
+    // Проверка, находится ли курсор на кнопке "Вернуться в меню".
     returnToMenuButton.isHovered = SDL_PointInRect(&mousePoint, &returnToMenuButton.position);
 
+    // Обработка клика мыши
     if (event.type == SDL_MOUSEBUTTONDOWN) {
-        std::cout << "Mouse Button Down at: " << x << ", " << y << std::endl;
         if (returnToMenuButton.isHovered) {
-            std::cout << "Button Clicked" << std::endl;
-            returnToMenuButton.isClicked = true;
+            returnToMenuButton.isClicked = true; // Установка флага клика по кнопке
         }
     }
 }
 
+// Рендеринг сцены победы.
 void WinScene::render() {
-    renderTexture(backgroundTexture, renderer, 0, 0);
-
-    returnToMenuButton.render(renderer);
-    SDL_RenderPresent(renderer);
+    renderTexture(backgroundTexture, renderer, 0, 0); // Отрисовка фона
+    returnToMenuButton.render(renderer); // Отрисовка кнопки "Вернуться в меню"
+    SDL_RenderPresent(renderer); // Обновление экрана
 }
 
+// Обновление состояния сцены победы.
 GameState WinScene::updateState() {
     if (returnToMenuButton.isClicked) {
-        std::cout << "Returning to main menu from win scene" << std::endl;
         returnToMenuButton.isClicked = false;
-        return GameState::MainMenu;
+        return GameState::MainMenu; // Переход в главное меню
     }
-    return GameState::Win;
+    return GameState::Win; // Оставаться в сцене победы
 }
