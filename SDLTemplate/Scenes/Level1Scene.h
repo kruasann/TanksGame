@@ -5,6 +5,10 @@
 #include <SDL2/SDL.h>
 #include <box2d/box2d.h>
 #include <vector>
+#include <chrono>
+#include <string>
+#include <sstream>   // Для std::stringstream
+#include <iomanip>   // Для std::setfill и std::setw
 #include "../game_states.h"
 #include "../Assets/tank.h"
 #include "../Utils/MusicPlayer.h"
@@ -48,11 +52,20 @@ public:
 
     int totalTargets = 0; // Количество мишеней на карте
 
+    std::chrono::high_resolution_clock::time_point startTime;
+    std::chrono::high_resolution_clock::time_point currentTime;
+    std::string formattedTime; // Строка для хранения отформатированного времени
+
+    // Объявление метода для форматирования времени
+    std::string formatTime(double milliseconds);
+
 private:
     bool musicStarted = false; // Флаг, указывающий, началась ли музыка
     bool& pauseEnabled;
     int targetsHit;   // Количество пораженных мишеней
     int score;
+    bool allTargetsHit;
+    std::string endTime; // Для хранения времени окончания
     int pointsPerTarget; // Очки за одну мишень
     SDL_Renderer* renderer;    // Рендерер SDL
     SDL_Texture* backgroundTexture; // Текстура фона

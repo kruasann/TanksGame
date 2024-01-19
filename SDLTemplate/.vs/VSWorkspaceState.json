@@ -2,12 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\Assets",
-    "\\Assets\\Sprites\\Tanks_parts",
     "\\Objects",
     "\\Objects\\Physics",
     "\\Scenes",
     "\\Scenes\\settings_scene.cpp"
   ],
-  "SelectedNode": "\\Assets\\tank.cpp",
+  "SelectedNode": "\\Scenes\\Level1Scene.cpp",
   "PreviewInSolutionExplorer": false
 }

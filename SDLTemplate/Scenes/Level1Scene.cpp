@@ -45,6 +45,8 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
     physicsWorld->SetContactListener(myContactListener);
 
     createTargets();
+
+    startTime = std::chrono::high_resolution_clock::now();
 }
 
 // Деструктор класса Level1Scene
@@ -238,6 +240,10 @@ void Level1Scene::update() {
     // Обновление состояния физического мира на один временной шаг
     physicsWorld->Step(timeStep, velocityIterations, positionIterations);
 
+    currentTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> timeSpan = currentTime - startTime;
+    formattedTime = formatTime(timeSpan.count());
+
 
     // Проверка существования объекта танка и его обновление.
     if (tank) {
@@ -284,6 +290,18 @@ GameState Level1Scene::updateState() {
     }
 
     if (targetsHit == totalTargets) {
+        if (!allTargetsHit) {
+            allTargetsHit = true;
+            auto endTime = std::chrono::high_resolution_clock::now(); // Сохраняем время окончания
+
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+            double maxTime = 5 * 60 * 1000; // максимальное время (5 минут) в миллисекундах
+            double timeCoefficient = std::max(0.0, 1 - duration / maxTime);
+            score = static_cast<int>(score * timeCoefficient);
+
+            std::string timeStr = formatTime(duration); // Преобразование времени в строку
+            appendToLeaderboard("leaderboard.txt", timeStr, score); // Запись в файл
+        }
         // Если все цели поражены, переключаемся на сцену победы
         return GameState::Win;
     }
@@ -292,6 +310,21 @@ GameState Level1Scene::updateState() {
     pauseEnabled = false;
     return GameState::Level1;
 }
+
+std::string Level1Scene::formatTime(double milliseconds) {
+    int minutes = static_cast<int>(milliseconds / 60000);
+    milliseconds -= minutes * 60000;
+    int seconds = static_cast<int>(milliseconds / 1000);
+    milliseconds -= seconds * 1000;
+    int millis = static_cast<int>(milliseconds);
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(2) << minutes << ":"
+        << std::setfill('0') << std::setw(2) << seconds << ":"
+        << std::setfill('0') << std::setw(3) << millis;
+    return ss.str();
+}
+
 
 // Рендеринг сцены
 void Level1Scene::render() {
@@ -309,8 +342,28 @@ void Level1Scene::render() {
 
     renderTargets();
 
-    std::string statusText = std::to_string(targetsHit) + "/" + std::to_string(totalTargets) + " Targets Hit | Score: " + std::to_string(score);
-    renderText(renderer, statusText, 620, 50, 32);
+    // Обновление и отображение счетчика времени
+    if (!allTargetsHit) {
+        currentTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> timeSpan = currentTime - startTime;
+        formattedTime = formatTime(timeSpan.count());
+    }
+
+
+    // Строка для счета и количества пораженных мишеней
+    std::string statusText = std::to_string(targetsHit) + "/" +
+        std::to_string(totalTargets) + " Targets Hit | " +
+        "Score: " + std::to_string(score);
+
+    // Отрисовка статуса
+    renderText(renderer, statusText, 630, 50, 32, {0, 0, 0, 255});
+
+    // Строка для времени
+    std::string timeText = "Time: " + formattedTime;
+
+    // Отрисовка времени ниже статуса
+    // Позиция Y увеличена, чтобы время отображалось ниже
+    renderText(renderer, timeText, 770, 90, 32, {0, 0, 0, 255});  // Увеличьте Y на значение, достаточное для разделения текста
 
     // Показываем отрендеренное на экране
     SDL_RenderPresent(renderer);

@@ -20,6 +20,9 @@ public:
     ~MainMenuScene();
     Button buttonStart;
     Button buttonSettings;
+    Button buttonHelp;
+    Button buttonCredits;
+    Button buttonLeaderboard;
     Button buttonExit;
     SDL_Texture* backgroundTexture;
     bool isInitializedSuccessfully() const;
