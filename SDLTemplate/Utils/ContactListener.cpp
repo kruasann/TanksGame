@@ -5,6 +5,7 @@
 ContactListener::ContactListener(SoundPlayer& soundPlayer)
     : soundPlayer(soundPlayer) {
     hitSound = Mix_LoadWAV("Assets/Sounds/Target_down_v2.mp3"); // Загрузка звукового эффекта попадания
+    Mix_VolumeChunk(hitSound, 30);
 }
 
 // Деструктор класса ContactListener

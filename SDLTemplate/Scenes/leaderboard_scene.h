@@ -3,8 +3,11 @@
 #define LEADERBOARD_SCENE_H
 
 #include <SDL2/SDL.h>
+#include <string>
+#include <vector>
 #include "../game_states.h"
 #include "../Objects/button.h"
+#include "../Objects/board.h"
 #include "../Utils/Utils.h"
 #include "../Utils/MusicPlayer.h"
 #include "../Utils/SoundPlayer.h"
@@ -30,6 +33,7 @@ private:
     SoundPlayer& soundPlayer;
     SDL_Texture* backgroundTexture; // Текстура фона
     Button returnToMenuButton;              // Кнопка "Назад"
+    std::vector<LeaderboardEntry> leaderboardEntries;
 };
 
 #endif // LEADERBOARD_SCENE_H

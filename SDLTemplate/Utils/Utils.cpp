@@ -64,7 +64,7 @@ void appendToLeaderboard(const std::string& filename, const std::string& timeStr
     auto tm = *std::localtime(&t);
 
     // Записываем данные в файл
-    file << std::put_time(&tm, "%d-%m-%Y %H:%M:%S") << ": Time: " << timeStr << ": Score: " << score << std::endl;
+    file << std::put_time(&tm, "%d-%m-%Y %H:%M:%S") << " Time: " << timeStr << " Score: " << score << std::endl;
     
     file.close();
 }
