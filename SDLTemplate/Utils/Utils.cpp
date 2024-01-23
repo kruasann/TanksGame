@@ -1,5 +1,6 @@
 // Подключение заголовочного файла Utils.h
 #include "Utils.h"
+#include "../Objects/board.h"
 #include "../src/include/SDL2/SDL.h"
 #include "../src/include/SDL2/SDL_image.h"
 #include <iostream>
@@ -55,16 +56,33 @@ void renderText(SDL_Renderer* renderer, const std::string& text, int x, int y, i
     TTF_CloseFont(font);         // Закрытие шрифта
 }
 
-void appendToLeaderboard(const std::string& filename, const std::string& timeStr, int score) {
-    std::ofstream file;
-    file.open(filename, std::ios::app); // Открываем файл в режиме добавления
+
+void appendToLeaderboard(const std::string& filename, const std::string& gameDurationStr, int score) {
+    std::vector<LeaderboardEntry> leaderboard = readLeaderboard(); // Читаем существующие записи
 
     // Получаем текущее время
     auto t = std::time(nullptr);
     auto tm = *std::localtime(&t);
 
-    // Записываем данные в файл
-    file << std::put_time(&tm, "%d-%m-%Y %H:%M:%S") << " Time: " << timeStr << " Score: " << score << std::endl;
-    
-    file.close();
+    std::stringstream currentDate;
+    std::stringstream currentTime;
+
+    // Форматируем дату и время
+    currentDate << std::put_time(&tm, "%d-%m-%Y");
+    currentTime << std::put_time(&tm, "%H:%M:%S");
+
+    // Добавляем новую запись
+    leaderboard.emplace_back(currentDate.str(), currentTime.str(), gameDurationStr, score);
+
+    // Сортируем по длительности игры
+    std::sort(leaderboard.begin(), leaderboard.end());
+    if (leaderboard.size() > 5) {
+        leaderboard.erase(leaderboard.begin() + 5, leaderboard.end());
+    }
+
+    // Перезаписываем файл
+    std::ofstream file(filename, std::ios::trunc); // Открываем файл в режиме перезаписи
+    for (const auto& entry : leaderboard) {
+        file << entry.date << " " << entry.time << " Time: " << entry.gameDuration << " Score: " << entry.score << std::endl;
+    }
 }

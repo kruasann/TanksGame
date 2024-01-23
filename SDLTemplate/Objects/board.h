@@ -15,8 +15,9 @@ struct LeaderboardEntry {
     LeaderboardEntry(std::string date, std::string time, std::string gameDuration, int score)
         : date(std::move(date)), time(std::move(time)), gameDuration(std::move(gameDuration)), score(score) {}
 
+    // Сравнение по длительности игры
     bool operator<(const LeaderboardEntry& other) const {
-        return score > other.score;
+        return gameDuration < other.gameDuration;
     }
 };
 
@@ -40,7 +41,7 @@ inline std::vector<LeaderboardEntry> readLeaderboard() {
         leaderboard.emplace_back(date, time, duration, score);
     }
 
-    // Сортировка и сохранение только пяти лучших записей
+    // Сортировка и уменьшение до 5 лучших записей
     std::sort(leaderboard.begin(), leaderboard.end());
     if (leaderboard.size() > 5) {
         leaderboard.erase(leaderboard.begin() + 5, leaderboard.end());

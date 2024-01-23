@@ -5,8 +5,9 @@
     "\\Objects",
     "\\Objects\\Physics",
     "\\Scenes",
-    "\\Scenes\\settings_scene.cpp"
+    "\\Scenes\\settings_scene.cpp",
+    "\\Utils"
   ],
-  "SelectedNode": "\\Scenes\\Level1Scene.cpp",
+  "SelectedNode": "\\main.cpp",
   "PreviewInSolutionExplorer": false
 }
