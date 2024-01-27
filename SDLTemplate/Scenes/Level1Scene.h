@@ -9,16 +9,16 @@
 #include <string>
 #include <sstream>   // Для std::stringstream
 #include <iomanip>   // Для std::setfill и std::setw
+#include "BaseScene.h"
 #include "../game_states.h"
 #include "../Assets/tank.h"
 #include "../Utils/MusicPlayer.h"
 #include "../Utils/SoundPlayer.h"
 #include "../Utils/ContactListener.h"
 #include "../Objects/button.h"
-#include "../Objects/Physics/PhysicalEntity.h"
 #include "../Objects/Physics/Target.h"
 
-class Level1Scene {
+class Level1Scene : public BaseScene {
 public:
     // Конструктор класса, инициализирующий сцену уровня 1
     Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled);
@@ -67,7 +67,6 @@ private:
     bool allTargetsHit;
     std::string endTime; // Для хранения времени окончания
     int pointsPerTarget; // Очки за одну мишень
-    SDL_Renderer* renderer;    // Рендерер SDL
     SDL_Texture* backgroundTexture; // Текстура фона
     std::vector<Target*> targets; // Вектор для хранения мишеней
     Button pauseButton;             // Кнопка паузы

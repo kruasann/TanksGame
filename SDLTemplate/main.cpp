@@ -94,23 +94,23 @@ int main(int argc, char* argv[]) {
             // Обработка событий в зависимости от текущего состояния игры
             switch (gameState) {
             case GameState::MainMenu:
-                mainMenuScene.handleEvents(event);
+                mainMenuScene.handleEvents(event, gameState);
                 gameState = mainMenuScene.updateState();
                 break;
             case GameState::Settings:
-                settingsScene.handleEvents(event);
+                settingsScene.handleEvents(event, gameState);
                 gameState = settingsScene.updateState();
                 break;
             case GameState::Help:
-                helpScene.handleEvents(event);
+                helpScene.handleEvents(event, gameState);
                 gameState = helpScene.updateState();
                 break;
             case GameState::Credits:
-                creditsScene.handleEvents(event);
+                creditsScene.handleEvents(event, gameState);
                 gameState = creditsScene.updateState();
                 break;
             case GameState::Leaderboard:
-                leaderboardScene.handleEvents(event);
+                leaderboardScene.handleEvents(event, gameState);
                 gameState = leaderboardScene.updateState();
                 break;
             case GameState::Level1:

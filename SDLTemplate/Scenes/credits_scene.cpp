@@ -5,7 +5,7 @@
 #include "../Utils/SoundPlayer.h"
 
 CreditsScene::CreditsScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(renderer),
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     backgroundTexture(loadTexture("Assets/Sprites/Main_menu.png", renderer)),
@@ -25,7 +25,7 @@ CreditsScene::CreditsScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sou
     };
 }
 
-void CreditsScene::handleEvents(const SDL_Event& event) {
+void CreditsScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     int x, y;
     SDL_GetMouseState(&x, &y);
     SDL_Point mousePoint = { x, y };

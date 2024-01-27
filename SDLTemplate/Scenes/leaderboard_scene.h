@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include "BaseScene.h"
 #include "../game_states.h"
 #include "../Objects/button.h"
 #include "../Objects/board.h"
@@ -13,13 +14,13 @@
 #include "../Utils/SoundPlayer.h"
 
 // Класс LeaderboardScene для представления сцены таблицы лидеров.
-class LeaderboardScene {
+class LeaderboardScene : public BaseScene {
 public:
     // Конструктор класса, инициализирует сцену таблицы лидеров.
     LeaderboardScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
 
     // Метод для обработки событий SDL.
-    void handleEvents(const SDL_Event& event);
+    void handleEvents(const SDL_Event& event, GameState& gameState);
 
     // Метод для рендеринга сцены таблицы лидеров.
     void render();
@@ -28,7 +29,6 @@ public:
     GameState updateState();
 
 private:
-    SDL_Renderer* renderer;        // Рендерер SDL для отрисовки
     MusicPlayer& musicPlayer;
     SoundPlayer& soundPlayer;
     SDL_Texture* backgroundTexture; // Текстура фона

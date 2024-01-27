@@ -2,6 +2,7 @@
 #define SETTINGS_SCENE_H
 
 #include <SDL2/SDL.h>
+#include "BaseScene.h"
 #include "../game_states.h"
 #include "../Objects/button.h"
 #include "../Objects/slider.h"
@@ -10,13 +11,13 @@
 #include "../Utils/ConfigurationManager.h"
 
 // Класс SettingsScene для представления сцены настроек в игре.
-class SettingsScene {
+class SettingsScene : public BaseScene {
 public:
     // Конструктор класса, инициализирует сцену настроек.
     SettingsScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
 
     // Метод для обработки событий SDL.
-    void handleEvents(const SDL_Event& event);
+    void handleEvents(const SDL_Event& event, GameState& gameState);
 
     // Метод для рендеринга сцены настроек.
     void render();
@@ -26,7 +27,6 @@ public:
 
 private:
     // Приватные переменные класса.
-    SDL_Renderer* renderer;       // Рендерер SDL для отрисовки
     MusicPlayer& musicPlayer;     // Объект для управления музыкой
     SoundPlayer& soundPlayer;     // Объект для управления звуковыми эффектами
 

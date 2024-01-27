@@ -4,7 +4,7 @@
 
 // Конструктор класса WinScene.
 WinScene::WinScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(renderer),
+    : BaseScene(renderer),
     returnToMenuButton(loadTexture("Assets/Sprites/Buttons/Menu_button.png", renderer),
         loadTexture("Assets/Sprites/Buttons/Menu_button_hover.png", renderer),
         400, 600, &soundPlayer),

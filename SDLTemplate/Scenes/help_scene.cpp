@@ -5,7 +5,7 @@
 #include "../Utils/SoundPlayer.h"
 
 HelpScene::HelpScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(renderer),
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     backgroundTexture(loadTexture("Assets/Sprites/Main_menu.png", renderer)),
@@ -30,7 +30,7 @@ HelpScene::HelpScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlay
     };
 }
 
-void HelpScene::handleEvents(const SDL_Event& event) {
+void HelpScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     int x, y;
     SDL_GetMouseState(&x, &y);
     SDL_Point mousePoint = { x, y };

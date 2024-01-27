@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include "BaseScene.h"
 #include "../game_states.h"
 #include "../Objects/button.h"
 #include "../Utils/Utils.h"
@@ -12,13 +13,13 @@
 #include "../Utils/SoundPlayer.h"
 
 // Класс HelpScene для представления сцены помощи и информации в игре.
-class HelpScene {
+class HelpScene : public BaseScene {
 public:
     // Конструктор класса, инициализирует сцену помощи.
     HelpScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
 
     // Метод для обработки событий SDL.
-    void handleEvents(const SDL_Event& event);
+    void handleEvents(const SDL_Event& event, GameState& gameState);
 
     // Метод для рендеринга сцены помощи.
     void render();
@@ -27,7 +28,6 @@ public:
     GameState updateState();
 
 private:
-    SDL_Renderer* renderer;        // Рендерер SDL для отрисовки
     MusicPlayer& musicPlayer;
     SoundPlayer& soundPlayer;
     SDL_Texture* backgroundTexture; // Текстура фона

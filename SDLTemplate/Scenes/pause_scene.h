@@ -2,6 +2,7 @@
 #define PAUSE_MENU_SCENE_H
 
 #include <SDL2/SDL.h>
+#include "BaseScene.h"
 #include "../game_states.h"
 #include "../Objects/button.h"
 #include "../Objects/slider.h"
@@ -9,7 +10,7 @@
 #include "../Utils/SoundPlayer.h"
 
 // Класс сцены паузы.
-class PauseMenuScene {
+class PauseMenuScene : BaseScene{
 public:
     // Конструктор.
     PauseMenuScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled);
@@ -23,7 +24,6 @@ public:
     GameState updateState();
 
 private:
-    SDL_Renderer* renderer;
     MusicPlayer& musicPlayer;
     SoundPlayer& soundPlayer;
     SDL_Texture* backgroundTexture;

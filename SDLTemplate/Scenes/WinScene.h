@@ -2,13 +2,14 @@
 #define WIN_SCENE_H
 
 #include <SDL2/SDL.h>
+#include "BaseScene.h"
 #include "../Objects/button.h"
 #include "../Utils/MusicPlayer.h"
 #include "../Utils/SoundPlayer.h"
 #include "../game_states.h"
 
 // Класс WinScene для сцены победы в игре.
-class WinScene {
+class WinScene : public BaseScene {
 public:
     // Конструктор сцены победы.
     WinScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
@@ -27,7 +28,6 @@ public:
 
 private:
     SDL_Texture* backgroundTexture; // Текстура фона сцены
-    SDL_Renderer* renderer;         // Рендерер SDL
     Button returnToMenuButton;      // Кнопка "Вернуться в меню"
     // Другие необходимые члены и методы
 };

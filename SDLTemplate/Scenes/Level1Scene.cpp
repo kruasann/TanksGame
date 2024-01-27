@@ -13,7 +13,7 @@ const float SCALE = 5.0f; // Коэффициент масштабирования между Box2D и пикселями
 
 // Конструктор класса Level1Scene
 Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled)
-    : renderer(renderer),
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     musicStarted(false),
@@ -29,8 +29,6 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
     // Создание физического мира Box2D с гравитацией
     createPhysicsWorld();
 
-    std::cout << "Was Volume: " << static_cast<int>(musicPlayer.currentVolume()) << std::endl;
-
     // Создание террейна, включая землю и стены
     createTerrain();
 
@@ -44,7 +42,7 @@ Level1Scene::Level1Scene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, Sound
     myContactListener = new ContactListener(soundPlayer);
     physicsWorld->SetContactListener(myContactListener);
 
-    createTargets();
+    createTargets(); // Вызов функции создания мишеней
 
     startTime = std::chrono::high_resolution_clock::now();
 }
@@ -311,19 +309,31 @@ GameState Level1Scene::updateState() {
     return GameState::Level1;
 }
 
+// Функция преобразует время в миллисекундах в форматированную строку "мм:сс:мсс".
 std::string Level1Scene::formatTime(double milliseconds) {
+    // Преобразование миллисекунд в минуты.
     int minutes = static_cast<int>(milliseconds / 60000);
+    // Уменьшение общего времени в миллисекундах на количество миллисекунд, соответствующих минутам.
     milliseconds -= minutes * 60000;
+    // Преобразование оставшихся миллисекунд в секунды.
     int seconds = static_cast<int>(milliseconds / 1000);
+    // Уменьшение времени на количество миллисекунд, соответствующих секундам.
     milliseconds -= seconds * 1000;
+    // Оставшиеся миллисекунды после вычитания минут и секунд.
     int millis = static_cast<int>(milliseconds);
 
+    // Создание строкового потока для форматирования вывода времени.
     std::stringstream ss;
+    // Добавление минут в формате "мм:" с ведущими нулями, если необходимо.
     ss << std::setfill('0') << std::setw(2) << minutes << ":"
+        // Добавление секунд в формате "сс:" с ведущими нулями.
         << std::setfill('0') << std::setw(2) << seconds << ":"
+        // Добавление миллисекунд в формате "мсс" с ведущими нулями.
         << std::setfill('0') << std::setw(3) << millis;
+    // Возвращение отформатированной строки времени.
     return ss.str();
 }
+
 
 
 // Рендеринг сцены
@@ -342,10 +352,13 @@ void Level1Scene::render() {
 
     renderTargets();
 
-    // Обновление и отображение счетчика времени
+    // Проверка условия: если не все цели поражены (allTargetsHit == false).
     if (!allTargetsHit) {
+        // Запись текущего времени в переменную currentTime.
         currentTime = std::chrono::high_resolution_clock::now();
+        // Вычисление разницы времени между текущим временем и временем начала (startTime).
         std::chrono::duration<double, std::milli> timeSpan = currentTime - startTime;
+        // Форматирование разницы времени в удобочитаемый формат (минуты:секунды:миллисекунды).
         formattedTime = formatTime(timeSpan.count());
     }
 

@@ -16,7 +16,6 @@ public:
     void update();
     void render();
     void fire(); // Добавлен метод стрельбы
-    void clearProjectiles(); // Очистить снаряды
     std::vector<Projectile*>& getProjectiles() { return projectiles; }
 
 private:

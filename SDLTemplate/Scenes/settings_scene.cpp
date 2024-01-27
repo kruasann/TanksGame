@@ -14,7 +14,7 @@
 
 // Конструктор сцены настроек.
 SettingsScene::SettingsScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(renderer),
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     // Загрузка текстур фона и кнопок.
@@ -39,7 +39,7 @@ SettingsScene::SettingsScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, S
 }
 
 // Обработка событий в сцене настроек.
-void SettingsScene::handleEvents(const SDL_Event& event) {
+void SettingsScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     int x, y;
     SDL_GetMouseState(&x, &y);
     SDL_Point mousePoint = { x, y };

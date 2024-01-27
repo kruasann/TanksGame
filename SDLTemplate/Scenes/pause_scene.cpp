@@ -11,8 +11,8 @@
 #include <iostream>
 
 // Конструктор сцены паузы.
-PauseMenuScene::PauseMenuScene(SDL_Renderer* ren, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled)
-    : renderer(ren),
+PauseMenuScene::PauseMenuScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer, bool& pauseEnabled)
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     pauseEnabled(pauseEnabled),

@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include "BaseScene.h"
 #include "../game_states.h"
 #include "../Objects/button.h"
 #include "../Utils/Utils.h"
@@ -12,13 +13,13 @@
 #include "../Utils/SoundPlayer.h"
 
 // Класс CreditsScene для представления сцены инфы в игре.
-class CreditsScene {
+class CreditsScene : public BaseScene {
 public:
     // Конструктор класса, инициализирует сцену инфы.
     CreditsScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer);
 
     // Метод для обработки событий SDL.
-    void handleEvents(const SDL_Event& event);
+    void handleEvents(const SDL_Event& event, GameState& gameState);
 
     // Метод для рендеринга сцены инфы.
     void render();
@@ -27,7 +28,6 @@ public:
     GameState updateState();
 
 private:
-    SDL_Renderer* renderer;        // Рендерер SDL для отрисовки
     MusicPlayer& musicPlayer;
     SoundPlayer& soundPlayer;
     SDL_Texture* backgroundTexture; // Текстура фона

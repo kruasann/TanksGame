@@ -34,8 +34,8 @@ Projectile::Projectile(SDL_Renderer* ren, b2World* world, float x, float y, floa
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
     fixtureDef.density = 1.0f;          // Плотность
-    fixtureDef.restitution = 0.5f;      // Упругость
-    fixtureDef.friction = 0.3f;         // Трение
+    //fixtureDef.restitution = 0.5f;      // Упругость
+    //fixtureDef.friction = 0.3f;         // Трение
 
     // Применение определенных свойств к телу
     body->CreateFixture(&fixtureDef);

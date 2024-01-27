@@ -8,8 +8,8 @@
 #include <iostream>
 
 // Конструктор главного меню.
-MainMenuScene::MainMenuScene(SDL_Renderer* ren, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(ren),
+MainMenuScene::MainMenuScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     initializedSuccessfully(true),
@@ -61,7 +61,7 @@ bool MainMenuScene::isInitializedSuccessfully() const {
 }
 
 // Обработка событий в главном меню.
-void MainMenuScene::handleEvents(const SDL_Event& event) {
+void MainMenuScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     int x, y;
     SDL_GetMouseState(&x, &y);
     SDL_Point mousePoint = { x, y };

@@ -5,7 +5,7 @@
 
 
 LeaderboardScene::LeaderboardScene(SDL_Renderer* renderer, MusicPlayer& musicPlayer, SoundPlayer& soundPlayer)
-    : renderer(renderer),
+    : BaseScene(renderer),
     musicPlayer(musicPlayer),
     soundPlayer(soundPlayer),
     backgroundTexture(loadTexture("Assets/Sprites/Main_menu.png", renderer)),
@@ -15,7 +15,7 @@ LeaderboardScene::LeaderboardScene(SDL_Renderer* renderer, MusicPlayer& musicPla
     leaderboardEntries = readLeaderboard();
 }
 
-void LeaderboardScene::handleEvents(const SDL_Event& event) {
+void LeaderboardScene::handleEvents(const SDL_Event& event, GameState& gameState) {
     int x, y;
     SDL_GetMouseState(&x, &y);
     SDL_Point mousePoint = { x, y };
