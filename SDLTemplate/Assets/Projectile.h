@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <box2d/box2d.h>
+#include <vector>
 #include <iostream>
 
 class Projectile {
@@ -33,6 +34,9 @@ private:
     int textureWidth, textureHeight;
     bool markedForDeletion = false; // Флаг для удаления снаряда
     bool hasCollided = false;
+    std::vector<b2Vec2> tracerPositions;
+    const size_t maxTracerCount = 120; // Максимальное количество сохраняемых позиций
+
 };
 
 #endif // PROJECTILE_H
